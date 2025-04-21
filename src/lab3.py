@@ -30,7 +30,8 @@ def ada(data,features, num_stumps = 5):
         elif error >= .5: # very poor prediction
             if isinstance(stump, dict):
                 used_feats[stump['feature']] += 1
-            model.append({'tree': stump, 'alpha': 0})
+            if num_stumps == 1:
+                model.append({'tree': stump, 'alpha': 0})
             continue
         else:
             alpha = .5 * math.log((1-error)/error)
@@ -42,8 +43,8 @@ def ada(data,features, num_stumps = 5):
         #Normalizing Weights
         total = sum(weights)
         weights = [w/total for w in weights]
-        print(
-            f"Round {round + 1}: error={error:.4f}, alpha={alpha:.4f}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
+        # print(
+            # f"Round {round + 1}: error={error:.4f}, alpha={alpha:.4f}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
         model.append({'tree': stump, 'alpha': alpha})
         if isinstance(stump, dict):
             used_feats[stump['feature']] += 1
@@ -95,7 +96,7 @@ def train_stump(data,features,used_features):
             best_threshold = best_local_threshold
             best_split = best_local_split
 
-    print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
+    # print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
 
     if best_gain == 0 or not best_split:
         majority = Counter(label for _, label, _ in data).most_common(1)[0][0]
