@@ -1,1 +1,1 @@
-[{"tree": {"feature": "contains_the", "threshold": null, "left": "en", "right": "nl"}, "alpha": 0.9844829626776196}]
+[{"tree": {"feature": "vowel_ratio", "threshold": 0.6077190369818813, "left": "nl", "right": "en"}, "alpha": 0.3106188681393474}, {"tree": {"feature": "vowel_ratio", "threshold": 30.5, "left": "en", "right": "nl"}, "alpha": 0.018868545095672304}]
