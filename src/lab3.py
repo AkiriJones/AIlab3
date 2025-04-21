@@ -133,7 +133,7 @@ def majority_vote(data):
 
 # The main method for creating a decision tree of depth 4.
 # dt_data | dict(dict,str) = train_examples with the language label provided
-# features | set(str) = features to train the AI on
+# features.txt | set(str) = features.txt to train the AI on
 # depth | int = current depth of the tree
 # max_depth | int = maximum depth the tree can build, set to 4.
 def dt(dt_data,features,depth = 0,max_depth = 4):
@@ -298,7 +298,7 @@ if __name__ == '__main__':
         operation = args[0].lower()
         if operation == 'predict':
             if len(args) != 4 | len(args) != 3:
-                print("lab3.py predict <predict_examples> <features> <hypothesis>")
+                print("lab3.py predict <predict_examples> <features.txt> <hypothesis>")
             else:
                 ex_file = args[1]
                 if len(args) == 4:
@@ -328,12 +328,12 @@ if __name__ == '__main__':
 
         elif operation == 'train':
             if len(args) != 5:
-                print("lab3.py train <train_examples> <features> <hypothesisOut> <learning-type>")
+                print("lab3.py train <train_examples> <features.txt> <hypothesisOut> <learning-type>")
             else:
                 data_type = args[4]
                 if data_type not in ['dt','ada']:
                     print("Invalid data type. Please choose from dt (Decision Tree) or ada (Adaboost).")
-                    print("lab3.py train <examples> <features> <hypothesis> <learning-type>")
+                    print("lab3.py train <examples> <features.txt> <hypothesis> <learning-type>")
                     sys.exit(1)
                 ex_file = args[1]
                 feature_list = set()
