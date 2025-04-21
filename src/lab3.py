@@ -6,7 +6,7 @@ from sys import argv
 import math
 from collections import Counter
 
-def ada(data,features, num_stumps = 10):
+def ada(data,features, num_stumps = 1):
     n = len(data)
     weights = [1/n] * n
     model = []
@@ -32,6 +32,7 @@ def ada(data,features, num_stumps = 10):
                 used_feats[stump['feature']] += 1
             if num_stumps == 1:
                 model.append({'tree': stump, 'alpha': 0})
+            # print(f"Round {round + 1}: error={error:.4f}, alpha= {0}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
             continue
         else:
             alpha = .5 * math.log((1-error)/error)
@@ -43,8 +44,7 @@ def ada(data,features, num_stumps = 10):
         #Normalizing Weights
         total = sum(weights)
         weights = [w/total for w in weights]
-        # print(
-            # f"Round {round + 1}: error={error:.4f}, alpha={alpha:.4f}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
+        # print(f"Round {round + 1}: error={error:.4f}, alpha={alpha:.4f}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
         model.append({'tree': stump, 'alpha': alpha})
         if isinstance(stump, dict):
             used_feats[stump['feature']] += 1
@@ -96,7 +96,7 @@ def train_stump(data,features,used_features):
             best_threshold = best_local_threshold
             best_split = best_local_split
 
-    # print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
+    print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
 
     if best_gain == 0 or not best_split:
         majority = Counter(label for _, label, _ in data).most_common(1)[0][0]
@@ -137,16 +137,12 @@ def majority_vote(data):
 # depth | int = current depth of the tree
 # max_depth | int = maximum depth the tree can build, set to 4.
 def dt(dt_data,features,depth = 0,max_depth = 4):
-    base_entropy = entropy(dt_data)
-    # print(f"Building tree at depth {depth} with {len(dt_data)} train_examples")
     labels = [label for _, label in dt_data]
 
     if all(l == labels[0] for l in labels): #all train_examples are the same language
-        # print(f"Pure leaf reached: {labels[0]}")
         return labels[0]
     if depth == max_depth or not features:
         majority = Counter(labels).most_common(1)[0][0]
-        # print(f"No info gain at this node → Predict: {majority}")
         return majority
 
     best_gain = 0
@@ -344,6 +340,9 @@ if __name__ == '__main__':
                     get_features(feat_file)
                     example_list = get_examples(ex_file,False)
                     hypo_file = args[3]
+                    num_stump = 25
+                    if hypo_file == 'adaXOR.model':
+                        num_stump = 1
                     # open(hypo_file, 'w', encoding='utf-8').write("test")
                 except FileNotFoundError as e:
                     print(e)
@@ -359,7 +358,7 @@ if __name__ == '__main__':
                 elif data_type == 'ada':
                     for ex in example_list:
                         input_data.append((get_word_features(ex, keywords), example_list[ex]))
-                    json.dump(ada(input_data,feature_list), open(hypo_file, 'w'))
+                    json.dump(ada(input_data,feature_list,num_stump), open(hypo_file, 'w'))
 
         else:
             print('Invalid operation')
