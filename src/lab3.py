@@ -96,7 +96,7 @@ def train_stump(data,features,used_features):
             best_threshold = best_local_threshold
             best_split = best_local_split
 
-    print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
+    # print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
 
     if best_gain == 0 or not best_split:
         majority = Counter(label for _, label, _ in data).most_common(1)[0][0]
