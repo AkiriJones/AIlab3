@@ -6,7 +6,7 @@ from sys import argv
 import math
 from collections import Counter
 
-def ada(data,features, num_stumps = 5):
+def ada(data,features, num_stumps = 1):
     n = len(data)
     weights = [1/n] * n
     model = []
