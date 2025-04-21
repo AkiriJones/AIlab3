@@ -297,11 +297,12 @@ if __name__ == '__main__':
     if len(args) >= 1:
         operation = args[0].lower()
         if operation == 'predict':
-            if len(args) != 4:
+            if len(args) != 4 | len(args) != 3:
                 print("lab3.py predict <predict_examples> <features> <hypothesis>")
             else:
                 ex_file = args[1]
-                hypo_file = args[3]
+                if len(args) == 4:
+                    hypo_file = args[3]
                 feature_list = set()
                 keywords = set()
                 input_data = []
@@ -309,7 +310,10 @@ if __name__ == '__main__':
                     feat_file = args[2]
                     get_features(feat_file)
                     example_list = get_examples(ex_file, True)
-                    model = json.load(open(hypo_file))
+                    if len(args) == 4:
+                        model = json.load(open(hypo_file))
+                    else:
+                        model = json.load('best_hypothesis.json')
                 except FileNotFoundError as e:
                     print(e)
                     sys.exit(1)
