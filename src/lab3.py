@@ -32,8 +32,11 @@ def ada(data,features, num_stumps = 1):
                 used_feats[stump['feature']] += 1
             if num_stumps == 1:
                 model.append({'tree': stump, 'alpha': 0})
-            # print(f"Round {round + 1}: error={error:.4f}, alpha= {0}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
-            continue
+            else:
+                # print(f"Round {round + 1}: error={error:.4f}, alpha= {0}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
+                # majority = Counter(label for _, label in data).most_common(1)[0][0]
+                # model.append({'tree': majority, 'alpha': 1})
+                continue
         else:
             alpha = .5 * math.log((1-error)/error)
 
@@ -52,6 +55,9 @@ def ada(data,features, num_stumps = 1):
     #     if isinstance(round['tree'], dict):
     #         used_feats[round['tree']['feature']] += 1
     # print("Features used across stumps:", used_feats.most_common())
+    if not model:
+        majority = Counter(label for _, label in data).most_common(1)[0][0]
+        model.append({'tree': majority, 'alpha': 1})
     return model
 
 
@@ -340,7 +346,7 @@ if __name__ == '__main__':
                     get_features(feat_file)
                     example_list = get_examples(ex_file,False)
                     hypo_file = args[3]
-                    num_stump = 25
+                    num_stump = 5
                     if hypo_file == 'adaXOR.model':
                         num_stump = 1
                     # open(hypo_file, 'w', encoding='utf-8').write("test")
