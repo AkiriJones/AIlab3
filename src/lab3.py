@@ -347,7 +347,7 @@ if __name__ == '__main__':
                     example_list = get_examples(ex_file,False)
                     hypo_file = args[3]
                     num_stump = 5
-                    if hypo_file == 'adaXOR.model':
+                    if 'adaXOR.model' in hypo_file:
                         num_stump = 1
                     # open(hypo_file, 'w', encoding='utf-8').write("test")
                 except FileNotFoundError as e:
