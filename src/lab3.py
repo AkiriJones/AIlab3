@@ -296,7 +296,7 @@ if __name__ == '__main__':
         operation = args[0].lower()
         if operation == 'predict':
             if len(args) != 4:
-                print("TrainPredict.py predict <predict_examples> <features> <hypothesis>")
+                print("lab3.py predict <predict_examples> <features> <hypothesis>")
             else:
                 ex_file = args[1]
                 hypo_file = args[3]
@@ -322,12 +322,12 @@ if __name__ == '__main__':
 
         elif operation == 'train':
             if len(args) != 5:
-                print("TrainPredict.py train <train_examples> <features> <hypothesisOut> <learning-type>")
+                print("lab3.py train <train_examples> <features> <hypothesisOut> <learning-type>")
             else:
                 data_type = args[4]
                 if data_type not in ['dt','ada']:
                     print("Invalid data type. Please choose from dt (Decision Tree) or ada (Adaboost).")
-                    print("TrainPredict.py train <examples> <features> <hypothesis> <learning-type>")
+                    print("lab3.py train <examples> <features> <hypothesis> <learning-type>")
                     sys.exit(1)
                 ex_file = args[1]
                 feature_list = set()
