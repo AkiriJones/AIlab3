@@ -6,7 +6,7 @@ from sys import argv
 import math
 from collections import Counter
 
-def ada(data,features, num_stumps = 10):
+def ada(data,features, num_stumps = 5):
     n = len(data)
     weights = [1/n] * n
     model = []
@@ -30,6 +30,7 @@ def ada(data,features, num_stumps = 10):
         elif error >= .5: # very poor prediction
             if isinstance(stump, dict):
                 used_feats[stump['feature']] += 1
+            model.append({'tree': stump, 'alpha': 0})
             continue
         else:
             alpha = .5 * math.log((1-error)/error)
