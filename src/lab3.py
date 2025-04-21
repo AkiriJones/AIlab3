@@ -297,7 +297,7 @@ if __name__ == '__main__':
     if len(args) >= 1:
         operation = args[0].lower()
         if operation == 'predict':
-            if len(args) != 4 | len(args) != 3:
+            if len(args) != [3,4]:
                 print("lab3.py predict <predict_examples> <features.txt> <hypothesis>")
             else:
                 ex_file = args[1]
@@ -306,17 +306,17 @@ if __name__ == '__main__':
                 feature_list = set()
                 keywords = set()
                 input_data = []
-                # try:
-                feat_file = args[2]
-                get_features(feat_file)
-                example_list = get_examples(ex_file, True)
-                if len(args) == 4:
-                    model = json.load(open(hypo_file))
-                else:
-                    model = json.load('best_hypothesis.json')
-                # except FileNotFoundError as e:
-                #     print(e)
-                #     sys.exit(1)
+                try:
+                    feat_file = args[2]
+                    get_features(feat_file)
+                    example_list = get_examples(ex_file, True)
+                    if len(args) == 4:
+                        model = json.load(open(hypo_file))
+                    else:
+                        model = json.load('best_hypothesis.json')
+                except FileNotFoundError as e:
+                    print(e)
+                    sys.exit(1)
                 for ex in example_list:
                     features = get_word_features(ex,keywords)
                     if isinstance(model, list) and 'alpha' in model[0]:
@@ -339,14 +339,15 @@ if __name__ == '__main__':
                 feature_list = set()
                 keywords = set()
                 input_data = []
-                # try:
-                feat_file = args[2]
-                get_features(feat_file)
-                example_list = get_examples(ex_file,False)
-                hypo_file = args[3]
-                # except FileNotFoundError as e:
-                #     print(e)
-                #     sys.exit(1)
+                try:
+                    feat_file = args[2]
+                    get_features(feat_file)
+                    example_list = get_examples(ex_file,False)
+                    hypo_file = args[3]
+                    # open(hypo_file, 'w', encoding='utf-8').write("test")
+                except FileNotFoundError as e:
+                    print(e)
+                    sys.exit(1)
 
                 if data_type == 'dt':
                     for ex in example_list:
