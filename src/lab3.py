@@ -55,9 +55,9 @@ def ada(data,features, num_stumps = 1):
     #     if isinstance(round['tree'], dict):
     #         used_feats[round['tree']['feature']] += 1
     # print("Features used across stumps:", used_feats.most_common())
-    if not model:
-        majority = Counter(label for _, label in data).most_common(1)[0][0]
-        model.append({'tree': majority, 'alpha': 1})
+    # if not model:
+    #     majority = Counter(label for _, label in data).most_common(1)[0][0]
+    #     model.append({'tree': majority, 'alpha': 1})
     return model
 
 
