@@ -297,7 +297,7 @@ if __name__ == '__main__':
     if len(args) >= 1:
         operation = args[0].lower()
         if operation == 'predict':
-            if len(args) != [3,4]:
+            if len(args) != 3 and len(args) != 4:
                 print("lab3.py predict <predict_examples> <features.txt> <hypothesis>")
             else:
                 ex_file = args[1]
