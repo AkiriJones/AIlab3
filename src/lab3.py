@@ -6,6 +6,10 @@ from sys import argv
 import math
 from collections import Counter
 
+# Main method for creating an adaptive boosting algorithm
+# data | List(str) = examples to create predictions on
+# features | dict(dict,str) = features of examples with a language label
+# num_stumps | int = number of stumps to use, defaults to 1 if not provided anything.
 def ada(data,features, num_stumps = 1):
     n = len(data)
     weights = [1/n] * n
@@ -32,11 +36,8 @@ def ada(data,features, num_stumps = 1):
                 used_feats[stump['feature']] += 1
             if num_stumps == 1:
                 model.append({'tree': stump, 'alpha': 0})
-            else:
                 # print(f"Round {round + 1}: error={error:.4f}, alpha= {0}, feature={stump['feature'] if isinstance(stump, dict) else stump}")
-                # majority = Counter(label for _, label in data).most_common(1)[0][0]
-                # model.append({'tree': majority, 'alpha': 1})
-                continue
+            continue
         else:
             alpha = .5 * math.log((1-error)/error)
 
@@ -51,13 +52,6 @@ def ada(data,features, num_stumps = 1):
         model.append({'tree': stump, 'alpha': alpha})
         if isinstance(stump, dict):
             used_feats[stump['feature']] += 1
-    # for round in model:
-    #     if isinstance(round['tree'], dict):
-    #         used_feats[round['tree']['feature']] += 1
-    # print("Features used across stumps:", used_feats.most_common())
-    # if not model:
-    #     majority = Counter(label for _, label in data).most_common(1)[0][0]
-    #     model.append({'tree': majority, 'alpha': 1})
     return model
 
 
@@ -75,6 +69,7 @@ def train_stump(data,features,used_features):
         gain = -1
         best_local_threshold = None
         best_local_split = None
+        best_penalty = 0
 
         if isinstance(values[0],bool):
             left = [ex for ex in data if ex[0][feat]]
@@ -93,17 +88,17 @@ def train_stump(data,features,used_features):
                     best_feature = feat
                     best_local_threshold = t
                     best_local_split = (left, right)
-        penalty = used_features[feat]*.3
+        penalty = (used_features[feat] ** 2) * .3
         gain -= penalty
-
+        # print(f"Evaluating feature: {feat}, penalty: {penalty}, gain after penalty: {gain}")
         if gain > best_gain:
             best_gain = gain
             best_feature = feat
             best_threshold = best_local_threshold
             best_split = best_local_split
+            best_penalty = penalty
 
-    # print(f"Chosen feature: {best_feature}, penalty: {used_features[best_feature]*.3}, final gain: {best_gain}")
-
+    # print(f"Chosen feature: {best_feature}, penalty: {best_penalty}, final gain: {best_gain}")
     if best_gain == 0 or not best_split:
         majority = Counter(label for _, label, _ in data).most_common(1)[0][0]
         return majority
@@ -147,7 +142,7 @@ def dt(dt_data,features,depth = 0,max_depth = 4):
 
     if all(l == labels[0] for l in labels): #all train_examples are the same language
         return labels[0]
-    if depth == max_depth or not features:
+    if depth == max_depth or not features: #ran out of features or reached max depth
         majority = Counter(labels).most_common(1)[0][0]
         return majority
 
@@ -172,7 +167,7 @@ def dt(dt_data,features,depth = 0,max_depth = 4):
             #obtain every unique value seen in example set
             unique_vals = sorted(set(values))
             for i in range(len(unique_vals) - 1):
-                curr_threshold = (unique_vals[i] + unique_vals[i+1]) / 2
+                curr_threshold = (unique_vals[i] + unique_vals[i+1]) / 2 #Average the 2 values
                 left, right = split_numeric(dt_data, feat, curr_threshold)
                 gain = info_gain(dt_data, left, right)
                 if gain > best_gain:
@@ -181,7 +176,7 @@ def dt(dt_data,features,depth = 0,max_depth = 4):
                     best_threshold = curr_threshold
                     best_split = (left, right)
 
-    if best_gain == 0:
+    if best_gain == 0: #If there was no gain to be found in the set, return a majority count
         return Counter(labels).most_common(1)[0][0]
 
     left_branch = dt(best_split[0], features, depth+1, max_depth)
@@ -329,13 +324,13 @@ if __name__ == '__main__':
 
 
         elif operation == 'train':
-            if len(args) != 5:
+            if len(args) != 5 and len(args) != 6:
                 print("lab3.py train <train_examples> <features.txt> <hypothesisOut> <learning-type>")
             else:
                 data_type = args[4]
                 if data_type not in ['dt','ada']:
                     print("Invalid data type. Please choose from dt (Decision Tree) or ada (Adaboost).")
-                    print("lab3.py train <examples> <features.txt> <hypothesis> <learning-type>")
+                    print("lab3.py train <examples> <features.txt> <hypothesis> <learning-type> (Optional) <Number_stumps>")
                     sys.exit(1)
                 ex_file = args[1]
                 feature_list = set()
@@ -346,9 +341,12 @@ if __name__ == '__main__':
                     get_features(feat_file)
                     example_list = get_examples(ex_file,False)
                     hypo_file = args[3]
-                    num_stump = 5
-                    if 'adaXOR.model' in hypo_file:
+                    if (len(args) == 6) and (data_type == 'ada'):
+                        num_stump = int(args[5])
+                    elif 'adaXOR.model' in hypo_file:
                         num_stump = 1
+                    else:
+                        num_stump = 10
                     # open(hypo_file, 'w', encoding='utf-8').write("test")
                 except FileNotFoundError as e:
                     print(e)

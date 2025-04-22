@@ -1,0 +1,18 @@
+How to use the code
+ - Upon putting incorrect parameters, the program will prompt you on the correct input to both predict and train data.
+ - The logic for the program is the same format as the provided arguments, except the user may add an optional number of
+   of stumps provided, to make the adaboost more accurate.
+A description of features and decisions in choosing them
+ - The features that were used are mainly function words from both english and dutch, each having 20+ function words to
+   provide a hopefully more accurate reading on the phrases, considering they are commonly used and relatively distinct
+   between languages.
+Description of Decision tree learning
+ - After designing the functionality of the decision tree, I messed around with the parameters until the tree was
+   consistently accurate with the test examples provided, max_depth of 4 seemed to be the smallest possible depth that
+   could still provide accurate readings of the languages.
+Description of Adaboost
+ - To get this algorithm to be accurate, it was very difficult, since the features were stored in a set, attributes they
+   chose to read off was inconsistent, and picking the same attributes for multiple stumps. To account for useless
+   stumps, I implemented a penalty for repeated values, and to remove redundant stumps, I lowered the number of stumps
+   to 10. half of these stumps tend to be useless, but it takes around 8 stumps to reach another valuable feature, which
+   generally resulted in better models.
