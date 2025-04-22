@@ -227,26 +227,26 @@ def info_gain(data,left, right):
 
 
 def get_word_features(text,keyword_list):
-    vowels = 'aeiouAEIOU'
-    words = text.split()
-    total_letter_length = 0
-    for word in words:
-        total_letter_length += len(word)
-    consonant_count = len(re.findall('[%s]' % re.escape(vowels), text))
-    vowel_count = total_letter_length - consonant_count
-
-    features = {
-        'avg_word_length': total_letter_length / len(words) if words else 0,
-        'vowel_ratio': vowel_count / total_letter_length if total_letter_length else 0,
-        'consonant_count': consonant_count,
-        'word_count': len(words),
-        'char_count': total_letter_length,
-        'is_question': text.strip().endswith('?'),
-        'is_long_text': total_letter_length > 80
-    }
-    feature_list.add('vowel_ratio')
-    feature_list.add('consonant_count')
-    feature_list.add('avg_word_length')
+    # vowels = 'aeiouAEIOU'
+    # words = text.split()
+    # total_letter_length = 0
+    # for word in words:
+    #     total_letter_length += len(word)
+    # consonant_count = len(re.findall('[%s]' % re.escape(vowels), text))
+    # vowel_count = total_letter_length - consonant_count
+    #
+    # features = {
+    #     # 'avg_word_length': total_letter_length / len(words) if words else 0,
+    #     # 'vowel_ratio': vowel_count / total_letter_length if total_letter_length else 0,
+    #     # 'consonant_count': consonant_count,
+    #     'word_count': len(words),
+    #     'char_count': total_letter_length,
+    #     'is_long_text': total_letter_length > 80
+    # }
+    # # feature_list.add('vowel_ratio')
+    # # feature_list.add('consonant_count')
+    # # feature_list.add('avg_word_length')
+    features = {}
     for word in keyword_list:
         features[f'contains_{word}'] = word in text
         feature_list.add('contains_' + word)
