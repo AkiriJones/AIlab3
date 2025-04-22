@@ -342,10 +342,14 @@ if __name__ == '__main__':
                     hypo_file = args[3]
                     if (len(args) == 6) and (data_type == 'ada'):
                         num_stump = int(args[5])
+                    elif (len(args) == 6) and (data_type == 'dt'):
+                        max_depth = int(args[5])
                     elif 'adaXOR.model' in hypo_file:
                         num_stump = 1
+                        max_depth = 3
                     else:
                         num_stump = 10
+                        max_depth = 4
                     # open(hypo_file, 'w', encoding='utf-8').write("test")
                 except FileNotFoundError as e:
                     print(e)
