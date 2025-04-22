@@ -28,7 +28,6 @@ def ada(data,features, num_stumps = 1):
         actual = [ex[1] for ex in data]
         #Weighted error
         error = sum(weights[i] for i in range(n) if predictions[i] != actual[i])
-
         if error == 0: #Prevents dividing by zero
             alpha = 10 # very confident prediction
         elif error >= .5: # very poor prediction
@@ -98,7 +97,7 @@ def train_stump(data,features,used_features):
             best_split = best_local_split
             best_penalty = penalty
 
-    # print(f"Chosen feature: {best_feature}, penalty: {best_penalty}, final gain: {best_gain}")
+    print(f"Chosen feature: {best_feature}, penalty: {best_penalty}, final gain: {best_gain}")
     if best_gain == 0 or not best_split:
         majority = Counter(label for _, label, _ in data).most_common(1)[0][0]
         return majority
